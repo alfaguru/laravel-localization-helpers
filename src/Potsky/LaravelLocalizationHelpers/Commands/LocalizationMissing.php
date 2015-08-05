@@ -64,9 +64,9 @@ class LocalizationMissing extends LocalizationAbstract
         ////////////////////////////////
         $lemmas = array();
         foreach ($folders as $path) {
-            foreach ( $this->get_php_files( $path ) as $php_file_path => $dumb ) {
+            foreach ( $this->get_source_files( $path ) as $php_file_path => $dumb ) {
                 $lemma = array();
-                foreach ( $this->extract_translation_from_php_file( $php_file_path ) as $k => $v) {
+                foreach ( $this->extract_translation_from_file( $php_file_path ) as $k => $v) {
                     $real_value           = eval( "return $k;" );
                     $lemma[ $real_value ] = $php_file_path;
                 }

@@ -63,8 +63,8 @@ class LocalizationFind extends LocalizationAbstract
         ////////////////////////////////
         $files = array();
         foreach ( $folders as $path ) {
-            foreach ( $this->get_php_files( $path ) as $php_file_path => $dumb ) {
-                foreach ( $this->extract_translation_from_php_file( $php_file_path ) as $k => $v) {
+            foreach ( $this->get_source_files( $path ) as $php_file_path => $dumb ) {
+                foreach ( $this->extract_translation_from_file( $php_file_path ) as $k => $v) {
                     $real_value = eval( "return $k;" );
                     $found      = false;
 

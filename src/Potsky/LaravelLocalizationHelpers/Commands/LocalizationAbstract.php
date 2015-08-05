@@ -38,6 +38,13 @@ abstract class LocalizationAbstract extends Command
     protected $folders = array();
 
     /**
+     * Folders to parse for missing translations
+     *
+     * @var  array
+     */
+    protected $file_pattern = '/^.+\.php$/i';
+
+    /**
      * Never make lemmas containing these keys obsolete
      *
      * @var  array
@@ -73,6 +80,7 @@ abstract class LocalizationAbstract extends Command
 			// Laravel 5
 			$this->trans_methods       = \Config::get('laravel-localization-helpers.trans_methods');
 			$this->folders             = \Config::get('laravel-localization-helpers.folders');
+			$this->file_pattern        = \Config::get('laravel-localization-helpers.file_pattern', '/^.+\.php$/i');
 			$this->ignore_lang_files   = \Config::get('laravel-localization-helpers.ignore_lang_files');
 			$this->lang_folder_path    = \Config::get('laravel-localization-helpers.lang_folder_path');
 			$this->never_obsolete_keys = \Config::get('laravel-localization-helpers.never_obsolete_keys');
@@ -83,6 +91,7 @@ abstract class LocalizationAbstract extends Command
 			// Laravel 4
 			$this->trans_methods       = \Config::get('laravel-localization-helpers::config.trans_methods');
 			$this->folders             = \Config::get('laravel-localization-helpers::config.folders');
+            $this->file_pattern        = \Config::get('laravel-localization-helpers.file_pattern', '/^.+\.php$/i');
 			$this->ignore_lang_files   = \Config::get('laravel-localization-helpers::config.ignore_lang_files');
 			$this->lang_folder_path    = \Config::get('laravel-localization-helpers::config.lang_folder_path');
 			$this->never_obsolete_keys = \Config::get('laravel-localization-helpers::config.never_obsolete_keys');
@@ -231,13 +240,13 @@ abstract class LocalizationAbstract extends Command
     }
 
     /**
-     * return an iterator of php files in the provided paths and subpaths
+     * return an iterator of files in the provided paths and subpaths
      *
      * @param string $path a source path
      *
-     * @return array a list of php file paths
+     * @return array a list of file paths
      */
-    protected function get_php_files($path)
+    protected function get_source_files($path)
     {
         if ( is_dir( $path ) ) {
             return new \RegexIterator(
@@ -246,7 +255,7 @@ abstract class LocalizationAbstract extends Command
                     \RecursiveIteratorIterator::SELF_FIRST,
                     \RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
                     ),
-                '/^.+\.php$/i',
+                $this->file_pattern,
                 \RecursiveRegexIterator::GET_MATCH
                 );
         } else {
@@ -264,7 +273,7 @@ abstract class LocalizationAbstract extends Command
      *
      * @return array an array dot of found translations
      */
-    protected function extract_translation_from_php_file($path)
+    protected function extract_translation_from_file($path)
     {
         $result = array();
         $string = file_get_contents( $path );
