@@ -93,7 +93,7 @@ abstract class LocalizationAbstract extends Command
         }
         else
         {
-            return \Config::get('laravel-localization-helpers::config.' . $tag, $default)
+            return \Config::get('laravel-localization-helpers::config.' . $tag, $default);
         }
     }
 
