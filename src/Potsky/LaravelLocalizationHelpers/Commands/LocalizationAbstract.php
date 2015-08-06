@@ -74,30 +74,27 @@ abstract class LocalizationAbstract extends Command
      */
     public function __construct( Repository $configRepository )
     {
-		$laravel = app();
-		if (substr($laravel::VERSION, 0, 1) == '5')
-		{
-			// Laravel 5
-			$this->trans_methods       = \Config::get('laravel-localization-helpers.trans_methods');
-			$this->folders             = \Config::get('laravel-localization-helpers.folders');
-			$this->file_pattern        = \Config::get('laravel-localization-helpers.file_pattern', '/^.+\.php$/i');
-			$this->ignore_lang_files   = \Config::get('laravel-localization-helpers.ignore_lang_files');
-			$this->lang_folder_path    = \Config::get('laravel-localization-helpers.lang_folder_path');
-			$this->never_obsolete_keys = \Config::get('laravel-localization-helpers.never_obsolete_keys');
-			$this->editor              = \Config::get('laravel-localization-helpers.editor_command_line');
-		}
-		else
-		{
-			// Laravel 4
-			$this->trans_methods       = \Config::get('laravel-localization-helpers::config.trans_methods');
-			$this->folders             = \Config::get('laravel-localization-helpers::config.folders');
-            $this->file_pattern        = \Config::get('laravel-localization-helpers.file_pattern', '/^.+\.php$/i');
-			$this->ignore_lang_files   = \Config::get('laravel-localization-helpers::config.ignore_lang_files');
-			$this->lang_folder_path    = \Config::get('laravel-localization-helpers::config.lang_folder_path');
-			$this->never_obsolete_keys = \Config::get('laravel-localization-helpers::config.never_obsolete_keys');
-			$this->editor              = \Config::get('laravel-localization-helpers::config.editor_command_line');
-		}
+        $this->trans_methods       = $this->getConfig('trans_methods');
+        $this->folders             = $this->getConfig('folders');
+        $this->file_pattern        = $this->getConfig('file_pattern', '/^.+\.php$/i');
+        $this->ignore_lang_files   = $this->getConfig('ignore_lang_files');
+        $this->lang_folder_path    = $this->getConfig('lang_folder_path');
+        $this->never_obsolete_keys = $this->getConfig('never_obsolete_keys');
+        $this->editor              = $this->getConfig('editor_command_line');
         parent::__construct();
+    }
+
+    protected function getCconfig($tag, $default = null)
+    {
+        $laravel = app();
+        if (substr($laravel::VERSION, 0, 1) == '5')
+        {
+            return \Config::get('laravel-localization-helpers.' . $tag, $default);
+        }
+        else
+        {
+            return \Config::get('laravel-localization-helpers::config.' . $tag, $default)
+        }
     }
 
     /**
