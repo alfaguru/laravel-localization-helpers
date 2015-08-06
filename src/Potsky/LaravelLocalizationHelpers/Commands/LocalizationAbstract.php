@@ -84,7 +84,7 @@ abstract class LocalizationAbstract extends Command
         parent::__construct();
     }
 
-    protected function getCconfig($tag, $default = null)
+    protected function getCcnfig($tag, $default = null)
     {
         $laravel = app();
         if (substr($laravel::VERSION, 0, 1) == '5')
